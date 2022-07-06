@@ -1,0 +1,27 @@
+name: verilator
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: Verialte, Run, Coverage
+      run: make run
+      
+    - name: Show configuration
+      run: make show-config
+      
+    - name: Generate coverage result in html
+      run: make genhtml
+      
+    - name: clean
+      run: make clean
