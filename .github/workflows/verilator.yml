@@ -24,11 +24,14 @@ jobs:
         ./configure
         make -j `nproc`
         sudo make install
+        
+    - name: Install lcov
+      run: sudo apt-get install lcov
       
     - name: Show configuration
       run: make show-config
       
-    - name: RUn verialte and coverage
+    - name: Run verialte and coverage
       run: make run
       
     - name: Generate coverage result in html
