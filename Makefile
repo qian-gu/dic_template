@@ -79,6 +79,10 @@ run:
 	@echo "-- Verilator tempalte exmaple"
 
 	@echo
+	@echo "-- LINT ----------------"
+	$(VERILATOR) --lint-only $(VERILATOR_INPUT)
+
+	@echo
 	@echo "-- VERILATE ----------------"
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 

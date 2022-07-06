@@ -1,0 +1,22 @@
+name: svlint
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install svlint
+      run:
+        sudo snap install svlint
+
+    - name: Run svlint
+      run: svlint -f vlogfiles.f

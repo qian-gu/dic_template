@@ -1,0 +1,50 @@
+CAPI=2:
+
+name: qian-gu::dic_template:0.1.0
+
+description: A digital template project
+
+filesets:
+  rtl:
+    files:
+      - rtl/blinky_pkg.sv
+      - rtl/blinky.sv
+      - rtl/counter.sv
+    file_type: systemVerilogSource
+
+  tb:
+    files:
+      - tb/tb_top.sv
+    file_type: systemVerilogSource
+
+  verilator_tb:
+    files:
+      - tb/sim_main.cpp
+    file_type: cppSource
+
+targets:
+  default: &default
+    filesets:
+      - rtl
+
+  lint:
+    default_tool: verilator
+    filesets: 
+      - rtl
+      - tb
+      - verilator_tb
+    tools:
+      verilator:
+        mode: lint-only
+    toplevel: tb_top
+
+  sim:
+    default_tool: verilator
+    filesets:
+      - rtl
+      - tb
+      - verilator_tb
+    tools:
+      verilator:
+        verilator_options: [--cc --exe -MMD -x-assign 0 -Wall --assert --coverage --build -j --trace]
+    toplevel: tb_top

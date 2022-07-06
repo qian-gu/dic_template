@@ -1,0 +1,24 @@
+name: svlint
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install fusesoc
+      run: sudo pip3 install fusesoc
+
+    - name: Run Lint
+      run: fusesoc --cores-root=. run --target=lint --setup --build --run qian-gu::dic_template
+
+    - name: Run Simulation
+      run: fusesoc --cores-root=. run --target=sim --setup --build --run qian-gu::dic_template

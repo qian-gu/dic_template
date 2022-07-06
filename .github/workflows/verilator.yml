@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Compile latest verilator
       run: |
         sudo apt-get update
@@ -24,18 +24,18 @@ jobs:
         ./configure
         make -j `nproc`
         sudo make install
-        
+
     - name: Install lcov
       run: sudo apt-get install lcov
-      
+
     - name: Show configuration
       run: make show-config
-      
+
     - name: Run verialte and coverage
       run: make run
-      
+
     - name: Generate coverage result in html
       run: make genhtml
-      
+
     - name: clean
       run: make clean
