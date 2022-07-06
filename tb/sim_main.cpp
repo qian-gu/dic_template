@@ -88,7 +88,7 @@ int main(int argc, char** argv, char** env) {
                 tb_top->rst_ni = !0;  // Deassert reset
             }
             // Assign some other inputs
-            tb_top->en_i += 1;
+            tb_top->en_i = 1;
         }
 
         // Evaluate model
