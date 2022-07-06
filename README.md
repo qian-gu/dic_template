@@ -1,5 +1,7 @@
 # dic_template
 
+[![verilator](https://github.com/qian-gu/dic_template/actions/workflows/verilator.yml/badge.svg?branch=main)](https://github.com/qian-gu/dic_template/actions/workflows/verilator.yml)
+
 Digital IC template project integrated with common opensource tools.
 
 ## Feature
