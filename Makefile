@@ -12,10 +12,10 @@ endif
 ######################################################################
 # Set up variables
 
+FUSESOC = fusesoc
+BENDER = bender
+MORTY = morty
 GENHTML = genhtml
-
-RTL_FL = vlogfiles.f
-TB = tb/sim_main.cpp tb/tb_top.sv
 
 ######################################################################
 # Set up variables
@@ -26,10 +26,14 @@ TB = tb/sim_main.cpp tb/tb_top.sv
 ifeq ($(VERILATOR_ROOT),)
 VERILATOR = verilator
 VERILATOR_COVERAGE = verilator_coverage
+VERILATOR_PROFCFUNC = verilator_profcfunc
+VERILATOR_GANTT = verilator_gantt
 else
 export VERILATOR_ROOT
 VERILATOR = $(VERILATOR_ROOT)/bin/verilator
 VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
+VERILATOR_PROFCFUNC = $(VERILATOR_ROOT)/bin/verilator_profcfunc
+VERILATOR_GANTT = $(VERILATOR_ROOT)/bin/verilator_gantt
 endif
 
 VERILATOR_FLAGS =
@@ -47,6 +51,8 @@ VERILATOR_FLAGS += --trace
 VERILATOR_FLAGS += --assert
 # Generate coverage analysis
 VERILATOR_FLAGS += --coverage
+# Enable profiling
+VERILATOR_FLAGS += --prof-cfuncs --prof-exec
 # Run make to compile model, with as many CPUs as are free
 VERILATOR_FLAGS += --build -j
 # Run Verilator in debug mode
@@ -55,9 +61,6 @@ VERILATOR_FLAGS += --build -j
 #VERILATOR_FLAGS += --gdbbt
 # Name of top module
 VERILATOR_FLAGS += --top-module tb_top
-
-# Input files for Verilator
-VERILATOR_INPUT = -f $(RTL_FL) $(TB)
 
 ######################################################################
 
@@ -79,23 +82,42 @@ run:
 	@echo "-- Verilator tempalte exmaple"
 
 	@echo
+	@echo "-- ADD LIBRARY ----------------"
+	$(FUSESOC) library add common_cells https://github.com/pulp-platform/common_cells
+
+	@echo
 	@echo "-- LINT ----------------"
-	$(VERILATOR) --lint-only $(VERILATOR_INPUT)
+	$(FUSESOC) --cores-root=. run --target=lint --setup --build --run qian-gu::dic_template
 
 	@echo
 	@echo "-- VERILATE ----------------"
-	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
+	$(FUSESOC) --cores-root=. run --target=sim --setup --build --run qian-gu::dic_template
 
 	@echo
 	@echo "-- RUN ---------------------"
-	@rm -rf logs
-	@mkdir -p logs
-	obj_dir/Vtb_top +trace
+	cd build/qian-gu__dic_template_0.1.0/sim-verilator/ && \
+	rm -rf logs && \
+	mkdir -p logs && \
+	./Vtb_top +trace
 
 	@echo
 	@echo "-- COVERAGE ----------------"
-	@rm -rf logs/annotated
+	cd build/qian-gu__dic_template_0.1.0/sim-verilator/ && \
+	rm -rf logs/annotated && \
 	$(VERILATOR_COVERAGE) $(VERILATOR_COV_FLAGS)
+
+	@echo
+	@echo "-- CODE PROFILING ----------------"
+	cd build/qian-gu__dic_template_0.1.0/sim-verilator/ && \
+	rm -rf logs/gprof.out logs/profcfunc.out && \
+	gprof Vtb_top gmon.out > logs/gprof.out && \
+	$(VERILATOR_PROFCFUNC) logs/gprof.out > logs/profcfunc.out
+
+	@echo
+	@echo "-- EXECUTION PROFILING ----------------"
+	cd build/qian-gu__dic_template_0.1.0/sim-verilator/ && \
+	rm -rf profile_exec.vcd && \
+	$(VERILATOR_GANTT) profile_exec.dat
 
 	@echo
 	@echo "-- DONE --------------------"
@@ -110,8 +132,13 @@ show-config:
 genhtml:
 	@echo "-- GENHTML --------------------"
 	@echo "-- Note not installed by default, so not in default rule"
+	cd build/qian-gu__dic_template_0.1.0/sim-verilator/ && \
 	$(GENHTML) logs/coverage.info --output-directory logs/html
+
+gendoc:
+	@echo "-- Generate documents --------------------"
+	$(MORTY) rtl/*.sv --doc doc
 
 maintainer-copy::
 clean mostlyclean distclean maintainer-clean::
-	-rm -rf obj_dir logs *.log *.dmp *.vpd core
+	-rm -rf build doc

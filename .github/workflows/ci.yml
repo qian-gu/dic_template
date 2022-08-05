@@ -1,4 +1,4 @@
-name: verilator
+name: fusesoc
 
 on:
   push:
@@ -28,14 +28,26 @@ jobs:
     - name: Install lcov
       run: sudo apt-get install lcov
 
+    - name: Install fusesoc
+      run: sudo pip3 install fusesoc
+
+    - name: Install svlint
+      run: sudo snap install svlint
+
+    - name: Run svlint
+      run: svlint rtl/*.sv 
+
     - name: Show configuration
       run: make show-config
 
-    - name: Run verialte and coverage
+    - name: Run lint, simulation, coverage, and profiling
       run: make run
 
     - name: Generate coverage result in html
       run: make genhtml
+
+    - name: Generate documents
+      run: make gendoc
 
     - name: clean
       run: make clean

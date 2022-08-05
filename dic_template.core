@@ -6,10 +6,12 @@ description: A digital template project
 
 filesets:
   rtl:
+    depend:
+      - ">=pulp-platform.org::common_cells:1.20.0"
     files:
       - rtl/blinky_pkg.sv
       - rtl/blinky.sv
-      - rtl/counter.sv
+      - rtl/step_counter.sv
     file_type: systemVerilogSource
 
   tb:
@@ -46,5 +48,15 @@ targets:
       - verilator_tb
     tools:
       verilator:
-        verilator_options: [--cc --exe -MMD -x-assign 0 -Wall --assert --coverage --build -j --trace]
+        verilator_options:
+        - --cc --exe --build -j
+        - -MMD
+        - -x-assign 0
+        - -Wno-fatal
+        - -Wall
+        - --assert
+        - --coverage
+        - --trace
+        - --prof-cfuncs
+        - --prof-exec
     toplevel: tb_top

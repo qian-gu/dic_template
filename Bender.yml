@@ -1,0 +1,20 @@
+package:
+  name: dic_template
+  authors:
+    - "Qian Gu <guqian110@163.com>"
+
+dependencies:
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.24.1 }
+
+sources:
+  # source file grouped in levels.
+  # level 0
+  - rtl/step_counter.sv
+  - rtl/blinky_pkg.sv
+  # level 1
+  - rtl/blinky.sv
+
+  - target: simulation
+    files:
+      - tb/tb_top.sv
+      - tb/sim_main.cpp

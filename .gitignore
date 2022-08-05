@@ -1,2 +1,6 @@
-obj_dir/
-logs/
+.git/
+build/
+Bender.lock
+Bender.local
+fusesoc_libraries
+fusesoc.conf
