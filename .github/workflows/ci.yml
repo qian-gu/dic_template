@@ -34,12 +34,17 @@ jobs:
     - name: Install svlint
       run: sudo snap install svlint
 
-    - name: Install morty
-      run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-           cargo install --git https://github.com/zarubaf/morty.git
+    - name: Install Rust (rustup)
+      run: |
+        curl https://sh.rustup.rs | sh -s -- -y
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      shell: bash
+
+    - name: Install Morty
+      run: cargo install --git https://github.com/zarubaf/morty.git
 
     - name: Run svlint
-      run: svlint rtl/*.sv 
+      run: svlint rtl/*.sv
 
     - name: Show configuration
       run: make show-config

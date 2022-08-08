@@ -1,6 +1,6 @@
 ######################################################################
 #
-# DESCRIPTION: Make Verilator model and run coverage
+# DESCRIPTION: template Makefile
 #
 ######################################################################
 
