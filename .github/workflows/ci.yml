@@ -1,4 +1,4 @@
-name: fusesoc
+name: ci
 
 on:
   push:
@@ -33,6 +33,10 @@ jobs:
 
     - name: Install svlint
       run: sudo snap install svlint
+
+    - name: Install morty
+      run: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+           cargo install --git https://github.com/zarubaf/morty.git
 
     - name: Run svlint
       run: svlint rtl/*.sv 
