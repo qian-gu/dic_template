@@ -7,7 +7,7 @@ description: A digital template project
 filesets:
   rtl:
     depend:
-      - ">=pulp-platform.org::common_cells:1.20.0"
+      - ">=pulp-platform.org::common_cells:1.26.0"
     files:
       - rtl/blinky_pkg.sv
       - rtl/blinky.sv
@@ -31,13 +31,16 @@ targets:
 
   lint:
     default_tool: verilator
-    filesets: 
+    filesets:
       - rtl
       - tb
       - verilator_tb
     tools:
       verilator:
         mode: lint-only
+        verilator_options:
+        - -Wno-fatal
+        - -Wall
     toplevel: tb_top
 
   sim:
